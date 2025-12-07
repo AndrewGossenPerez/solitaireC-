@@ -13,7 +13,7 @@
 int main() {
 
     sf::RenderWindow window(sf::VideoMode({ 1024u, 768u }), "Solitaire");
-    window.setFramerateLimit(60);
+    window.setFramerateLimit(140);
 
     // Load all assets
     Spritesheet sheet;

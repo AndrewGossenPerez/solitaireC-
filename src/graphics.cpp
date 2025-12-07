@@ -30,6 +30,9 @@ void SolitaireGraphics::drawStockpile(sf::RenderWindow& window,const Game& game)
     // Render the topmost card in the stockpile/dealing area, excluding dragged ones ( Handled in seperate function drawDragged)
     if (!game.getStockpile().empty()) {
         const Card& c = game.getStockpile().back();
+        if (draggedCard!=nullptr){
+            if (draggedCard==&c) return; // This card is being dragged, hence we don't want to render it 
+        }
         auto sprite = _sheet.makeCardSprite(c);
         sprite.setPosition({ stockpileXOffset+pileSpacing, foundationYOffset });
         window.draw(sprite);
@@ -68,7 +71,7 @@ void SolitaireGraphics::drawFoundations(sf::RenderWindow& window,const Game& gam
                 index=2; // Get the card behind the dragged card 
             }
 
-            if (index<game.getFoundation(i).size()){ // Ensure that the index is appropriate such that we avoid a heap issue 
+            if (index<=game.getFoundation(i).size()){ // Ensure that the index is appropriate such that we avoid a heap issue 
                 const Card& c=game.getFoundation(i)[game.getFoundation(i).size()-index];
                 auto sprite = _sheet.makeCardSprite(c);
                 sprite.setPosition({ x, y });
