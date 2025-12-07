@@ -1,6 +1,7 @@
 // Card.h, created by Andrew Gossen.
 // Defines a card object, i.e. as Queen of Hearts, used to represent a playing card
 // Stores the suit, card value, whether the card is face up, and the cards location
+
 #pragma once 
 #include <iostream>
 
@@ -19,8 +20,9 @@ class Card{
 
     public:
 
+    // Constructor 
     Card(Suit suit, Value value,bool faceUp,Location location, bool dragging)
-    : suit(suit), value(value), faceUp(faceUp), location(location), dragging(dragging) {}; // Card initialiser
+    : suit(suit), value(value), faceUp(faceUp), location(location), dragging(dragging) {}; 
 
     // Getter functions
     Suit getSuit() const{ return suit; }
@@ -48,8 +50,8 @@ class Card{
 
     bool faceUp;
     bool dragging=false; // Whether the player is currently dragging this card around 
-    Location location;
-    Suit suit;
-    Value value; 
+    Location location; // The location of the card 
+    Suit suit; // The suit of the card 
+    Value value; // The value of the card, i.e. Ace 
 
 };

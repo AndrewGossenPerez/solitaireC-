@@ -8,19 +8,13 @@
 #include <random>
 #include <iostream> // Debugging remove later 
 
-// Debugging 
-void Game::printTableau(int p){
-    std::cout<<"Printing";
-    for (int c=0;c<tableau[p].size();c++){
-        std::cout<<static_cast<int>(tableau[p][c].getValue());
-        std::cout<<static_cast<int>(tableau[p][c].getSuit());
-    }
-}
 
-// Game events 
+// -------- Game events 
+
+// -- Resets the stockpile and returns all cards back to the reserve 
 void Game::resetStockpile(){ // Resets the stockpile by returning all cards back to the reserve
+    
     if (stockpile.empty()) return;
-    std::cout << reserve.size() << std::endl;
     if (!reserve.empty()) return;
 
     while (!stockpile.empty()) {
@@ -31,6 +25,7 @@ void Game::resetStockpile(){ // Resets the stockpile by returning all cards back
     }
 }
 
+// -- Completely erases the current game state and gives the player new cards, also used for initialisation
 void Game::dealNewGame(){
 
     // Erase current game state
@@ -62,48 +57,54 @@ void Game::dealNewGame(){
 
     // Assign cards to Tableau, rest will remain in the reserve
     for (int p=0;p<7;p++){ // Pile iteration
-        for (int c=0;c<(p+1);c++){
+        for (int c=0;c<(p+1);c++){ // Assign cards to the pile 
             Card card=reserve.back();
             card.setLocation(Location::Tableau);
             reserve.pop_back();
             tableau[p].push_back(card);
             if (c==p){
-                tableau[p][c].setFaceUp(true);
+                tableau[p][c].setFaceUp(true); // End cards will be faceUp by default 
             }
             tableau[p][c].setTableauPile(p);
             tableau[p][c].setTableauIndex(c);
         }
     }
 
-    printTableau(2);
-
     return;
 
 }
 
+// ----- Deals a card from the reserve to the 'dealing area'
 void Game::dealFromReserve(){ // Moves a card from the reserve to the stockpile, hence dealing it
 
-    if (reserve.empty()) return; 
-    Card c = reserve.back();
+    if (reserve.empty()) return; // The reserve is empty, so return to avoid seg fault 
+
+    Card c = reserve.back(); // Deal from the back of the reserve 
     c.setLocation(Location::Stockpile);
     reserve.pop_back();
-    stockpile.push_back(c); // Goes from Back of stockpile -> Front of stockpile, i.e. last index is currently shown card
+    stockpile.push_back(c); // Goes from Back of Stock -> Front of stockpile, i.e. last index is currently shown card
 
-    // Log the move 
+    // Log the move for the Undo function
     Move move(
         c,
         Location::Reserve,
         Location::Stockpile,
         -1,-1
     );
-
     logMove(c,move);
 
 
 }
 
-// Helper Functions 
+// -------- Helper Functions 
+
+// --- Puts a card into a Tableau pile and pushes it back from the popBackArray 
 void Game::pushToTableau(const Move &move,Card card,std::vector<Card> &popBackArray){
+
+    // move -- Constant move object,
+    // card -- Card object which we will append to the Tableau and remove from popBackArray
+    // popBackArray -- The array we want to push back from, i.e. the array being removed of the card 
+
     card.setLocation(Location::Tableau);
     card.setFaceUp(true);
     card.setTableauIndex(tableau[move.getPile()].size());
@@ -114,8 +115,13 @@ void Game::pushToTableau(const Move &move,Card card,std::vector<Card> &popBackAr
     popBackArray.back().setFaceUp(true);
 }
 
+// --- Puts a card into the stockpile and pushes it back from the popBackArray 
 void Game::pushToStockpile(const Move& move, Card card,std::vector<Card> &popBackArray){
-    std::cout << "Pushing to stockpile" << std::endl;
+
+    // move -- Constant move object,
+    // card -- Card object which we will append to the stockpile and remove from popBackArray
+    // popBackArray -- The array we want to push back from, i.e. the array being removed of the card 
+
     card.setLocation(Location::Stockpile);
     card.setFaceUp(true);
     card.setTableauIndex(-1);
@@ -125,9 +131,11 @@ void Game::pushToStockpile(const Move& move, Card card,std::vector<Card> &popBac
     popBackArray.pop_back();
 }
 
-// Logic functions 
-
+// ---- Creates a move for logging, utilised by the undo function
 void Game::logMove(Card c,Move originalMove){
+    
+    // c -- The card we want to log the move for 
+    // originalMove -- The original move object, all that changes for the undo function is the card as we adjust it's stored indexs ( TableauPileIndex, TableauIndex, FoundationPile )
 
     Move newMove(
         c,
@@ -136,15 +144,23 @@ void Game::logMove(Card c,Move originalMove){
         originalMove.getPile(),
         originalMove.getStartingPile()
     );
-
     moveHistory.push_back(newMove);
 
 }
 
+
+// ------ Logic functions 
+
+// -- Applies Foundation Logic, cards can only move up to the foundation if they are the same suit and one value higher 
 void Game::FoundationLogic(const Move& move, const Card& movingCard,std::vector<Card> &popBackArray,bool undo){ // Game Logic for a move to the foundation pile 
 
     // This is assuming that movingCard is not connected to any other cards ( I.e. not a Tableau drag with multiple cards involved)
     // ^ This is pre-validated before this function is ran
+
+    // move -- Move object on which the logic is based on 
+    // movingCard -- The card object we want to move 
+    // popBackArray -- The array we're taking the card from 
+    // undo -- Whether this is apart of an 'Undo' where the player has clicked the undo button 
             
     int cardValue=static_cast<int>(movingCard.getValue());
     int suitValue=static_cast<int>(movingCard.getSuit()); // If the suit is <=1 then red, else >=2 black
@@ -188,20 +204,19 @@ void Game::FoundationLogic(const Move& move, const Card& movingCard,std::vector<
 
 };
 
+// -- Applies Tableau to Tableau logic, cards can only move onto another if they are a different suit and one value lower 
 void Game::TableauToTableauLogic(const Move& move, const Card& movingCard,bool undo){ // Game Logic for a move to a Tableau pile 
 
-    // Moving card in this instance can be connected to other cards 
-
+    // Moving card in this instance can be connected to other card
+     
+    // move -- Move object on which the logic is based on 
+    // movingCard -- The card object we want to move 
+    // undo -- Whether this is apart of an 'Undo' where the player has clicked the undo button 
+            
     int cardValue=static_cast<int>(movingCard.getValue());
     int suitValue=static_cast<int>(movingCard.getSuit()); 
 
-    std::cout << " Tableau Pile : "<< static_cast<int>(move.getPile());
-
     if (undo){
-
-        std::cout << static_cast<int>(movingCard.getTableauPile());
-        std::cout << static_cast<int>(movingCard.getTableauIndex());
-        std::cout << static_cast<int>(move.getPile());
 
         // If it's an undo doesn't need to follow game logic
         int endIndex=static_cast<int>(tableau[movingCard.getTableauPile()].size());
@@ -252,20 +267,20 @@ void Game::TableauToTableauLogic(const Move& move, const Card& movingCard,bool u
 
 };
 
+// -- Applies a game move using the Move object 
 void Game::applyMove(const Move& move,bool undo){ // Applies a move based on the logic of Klondike Solitaire 
 
-    std::cout<<"Applying 2" <<std::endl;
 
+    // move -- Move object on which the logic is based on 
+    // undo -- Whether this is apart of an 'Undo' where the player has clicked the undo button 
+            
     const Card& movingCard=move.getCard();
     int cardValue=static_cast<int>(movingCard.getValue());
     int suitValue=static_cast<int>(movingCard.getSuit()); // Red colour has property such that %2==1 
     
     if (move.getStartingPosition()==Location::Stockpile){  // We are moving a stockpile card
 
-        std::cout << static_cast<int>(move.getDestination());
-
         // In this case, we're either moving from the stockpiole to the Tableau or Foundation
-
 
         if (move.getDestination()==Location::Foundation){ // We want to move from Stockpile to the Foundation
             FoundationLogic(move,movingCard,stockpile,undo);
@@ -287,7 +302,6 @@ void Game::applyMove(const Move& move,bool undo){ // Applies a move based on the
                 Card endCard=tableau[move.getPile()].back();
                 int endCardValue=static_cast<int>(endCard.getValue());
                 bool differentColors =(static_cast<int>(endCard.getSuit())%2)!=(suitValue%2);
-                std::cout << "Different colors : " << differentColors << std::endl;
 
                 if (differentColors && (endCardValue==cardValue+1)){
                     Card c=movingCard;
@@ -366,6 +380,7 @@ void Game::applyMove(const Move& move,bool undo){ // Applies a move based on the
 
 }
 
+// -- Undoes the latest move in moveHistory 
 void Game::undo(){
 
     if (moveHistory.empty()) return; 

@@ -1,5 +1,6 @@
 // Move.h created by Andrew Gossen.
 // Defines a move object, used for move-validation
+
 #pragma once 
 #include "Card.h" // Include Card.h for Card object and location enum
 

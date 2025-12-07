@@ -1,9 +1,13 @@
 // Spritesheet.cpp created by Andrew Gossen.
+// Handles the spritesheet, and sprite textures
 
 #include "Spritesheet.h"
 #include "Graphics.h"
 
+// -- Loads the Spritesheet 
 bool Spritesheet::loadFromFile(const std::string& path) {
+
+    // path -- The file path for the texture 
 
     if (!_texture.loadFromFile(path)) return false;
 
@@ -15,19 +19,31 @@ bool Spritesheet::loadFromFile(const std::string& path) {
 
 }
 
+// -- Loads the Undo button texture 
 bool Spritesheet::loadUndo(const std::string& path){
+
+    // path -- The file path for the texture 
+
     if (!_undo.loadFromFile(path)) return false;
     return true;
 }
 
+// -- Loads the new deal button Texture  
 bool Spritesheet::loadNewDeal(const std::string& path){
+
+    // path -- The file path for the texture 
+
     if (!_newDeal.loadFromFile(path)) return false;
     return true;
 }
 
+// -- Returns a sprite for a card on column col and row row of the Spritesheet
 sf::Sprite Spritesheet::getCardSprite(int col, int row) const {
 
-    sf::IntRect rect(
+    // col - The column we want to isolate 
+    // row - The row we want to isolate 
+
+    sf::IntRect rect( // Isolate card from spritesheet 
         {col * _cardWidth,
         row * _cardHeight},
        { _cardWidth,
@@ -39,29 +55,31 @@ sf::Sprite Spritesheet::getCardSprite(int col, int row) const {
 
 }
 
+
+// -- Back card animation 
 int start=3; // Iterate from 3 to 5 to animate the back card
 sf::Sprite Spritesheet::makeBackSprite() {
-
-    if (_backClock.getElapsedTime() >= _backCardDelay){
-        start++;
+    if (_backClock.getElapsedTime() >= _backCardDelay){ // We've passed the delay 
+        start++; // Increment the back card sprite 
         if (start>5){ 
             start=3;
         }
-
-        _backClock.restart();
-
+        _backClock.restart(); // Reset the clock
     }
-
-    return Spritesheet::getCardSprite(start,5);
+    return Spritesheet::getCardSprite(start,5); // Set the back card sprite 
 }
 
+// -- Creates the reset button sprite, which is on col 10 row 4
 sf::Sprite Spritesheet::makeResetSprite() const {
     return Spritesheet::getCardSprite(10,4);
 }
 
+// -- Creates a card sprite for a Card object 
 sf::Sprite Spritesheet::makeCardSprite(const Card& card) const {
 
-    int col = static_cast<int>(card.getValue());
+    // card -- The card object we want to create a sprite for 
+
+    int col = static_cast<int>(card.getValue()); // Enums established to fit the Spritesheet 
     int row = static_cast<int>(card.getSuit());  
 
     sf::IntRect rect(
@@ -72,7 +90,6 @@ sf::Sprite Spritesheet::makeCardSprite(const Card& card) const {
     );
 
     sf::Sprite sprite{_texture, rect};
-
     return sprite;
 
 }

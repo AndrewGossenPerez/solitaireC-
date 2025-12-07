@@ -32,12 +32,9 @@ class Game{
     //Setters
     void setWon(bool hasWon) {won=hasWon;}
 
-    //Debugging
-    void printTableau(int p);
-
     private:
 
-    bool won=false;
+    bool won=false; // Whether the game has been won 
 
     void FoundationLogic(const Move& move, const Card& movingCard,std::vector<Card> &cardArray,bool undo);
     void TableauToTableauLogic(const Move& move, const Card& movingCard,bool undo);

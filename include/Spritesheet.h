@@ -1,4 +1,6 @@
 // Spritesheet.h, created by Andrew Gossen.
+// Defines the Spritesheet class used to store textures
+
 #pragma once 
 #include <SFML/Graphics.hpp>
 #include "Card.h"
@@ -17,14 +19,14 @@ class Spritesheet{
     sf::Sprite makeBackSprite();
     sf::Sprite makeResetSprite() const;
     sf::Sprite getCardSprite(int col, int row) const;
-    sf::Texture getUndo() const { return _undo; }  // Get the texture 
+    sf::Texture getUndo() const { return _undo; } 
     sf::Texture getNewDeal() const { return _newDeal; }
     int cardWidth() const { return _cardWidth; }
     int cardHeight() const { return _cardHeight; }
 
     private:
 
-    sf::Clock _backClock;  // For stockcard animation cooldown
+    sf::Clock _backClock;  // For the deal card animation 
     sf::Time _backCardDelay = sf::milliseconds(1000); // Card changes every second 
     sf::Texture _texture;
     sf::Texture _undo;
