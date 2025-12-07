@@ -14,7 +14,7 @@ bool _mouseWasDown=false;
 
 void Input::getHovered(sf::RenderWindow& window) {
 
-    // window -- The solitaire window object (RenderWindnow)
+    // window -- The solitaire window
 
     float cardWidth  = static_cast<float>(_sheet.cardWidth());
     float cardHeight = static_cast<float>(_sheet.cardHeight());

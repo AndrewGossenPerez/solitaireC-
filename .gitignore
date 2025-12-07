@@ -1,20 +1,27 @@
-# Ignore build output
+# Build output + object files
+obj/
 build/
 *.o
 *.obj
 *.exe
 *.app
+
+# my mac junk
 *.DS_Store
+*.dSYM/
 
-# Ignore CMake or make artifacts
-CMakeFiles/
-CMakeCache.txt
-Makefile
-
-# Ignore Xcode stuff
+# Xcode junk
 *.xcworkspace
 *.xcodeproj
 
-# Ignore binaries
+# Binaries
 solitaire
 a.out
+
+# Not needed
+.vscode/
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake

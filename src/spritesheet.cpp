@@ -23,7 +23,6 @@ bool Spritesheet::loadFromFile(const std::string& path) {
 bool Spritesheet::loadUndo(const std::string& path){
 
     // path -- The file path for the texture 
-
     if (!_undo.loadFromFile(path)) return false;
     return true;
 }
@@ -32,7 +31,6 @@ bool Spritesheet::loadUndo(const std::string& path){
 bool Spritesheet::loadNewDeal(const std::string& path){
 
     // path -- The file path for the texture 
-
     if (!_newDeal.loadFromFile(path)) return false;
     return true;
 }
@@ -78,7 +76,6 @@ sf::Sprite Spritesheet::makeResetSprite() const {
 sf::Sprite Spritesheet::makeCardSprite(const Card& card) const {
 
     // card -- The card object we want to create a sprite for 
-
     int col = static_cast<int>(card.getValue()); // Enums established to fit the Spritesheet 
     int row = static_cast<int>(card.getSuit());  
 
