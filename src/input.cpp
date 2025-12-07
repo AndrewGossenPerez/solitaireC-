@@ -27,7 +27,7 @@ void Input::getHovered(sf::RenderWindow& window) {
         Location startingLocation=draggedCardObj.getLocation();
         int startingPile=-1;
         // Establish starting pile 
-        
+
         if (startingLocation==Location::Tableau){
             startingPile=draggedCardObj.getTableauPile();
         } else if (startingLocation==Location::Foundation){
@@ -89,7 +89,7 @@ void Input::getHovered(sf::RenderWindow& window) {
     // Click detection for the deal card / reset deck 
     if (mouseDown && !_mouseWasDown && _graphics.draggedCard==nullptr) { // Click detected, ensure we have a valid ptr to avoid seg fault
         
-        if (_dealClock.getElapsedTime() >= _dealCooldown) { // Deal cooldown passed
+        if (_dealClock.getElapsedTime() >= _dealCooldown) { // Deal cooldown passed,
 
             sf::FloatRect stockRect( // Establish hitbox
                 {_graphics.stockpileXOffset,  
@@ -105,23 +105,28 @@ void Input::getHovered(sf::RenderWindow& window) {
                 static_cast<float>(_sheet.getUndo().getSize().y)}
             );
 
-            if (stockRect.contains(mouse)) {
+            sf::FloatRect newDealRect( // Establish hitbox
+                {_graphics.newDealXOffset,  
+                _graphics.newDealYOffset},  
+                {static_cast<float>(_sheet.getNewDeal().getSize().x),
+                static_cast<float>(_sheet.getNewDeal().getSize().y)}
+            );
 
+            if (stockRect.contains(mouse)) {
                 if (!game.getReserve().empty()) {
                     // Player wants to deal
                     game.dealFromReserve();  
-                     
                 } else {
                     // Player wants to reset the reserve, i.e. bring all stockpile cards back to reset
                     game.resetStockpile();
                 }
-
                 _dealClock.restart();
-
             } else if (undoRect.contains(mouse)){
                 // Player would like to undo
-                std::cout << " Performing undo";
                 game.undo();
+            } else if (newDealRect.contains(mouse)){
+                // Player would like a new deal
+                game.dealNewGame();
             }
 
         }
@@ -131,14 +136,14 @@ void Input::getHovered(sf::RenderWindow& window) {
     if (mouseDown && _mouseWasDown && _graphics.draggedCard==nullptr){ // Mouse was down this frame and last 
        
         // Check deal area to see if the player is initiating a drag
-        sf::FloatRect stockRect( // Establish hitbox
+        sf::FloatRect cardRect( // Establish hitbox
             {_graphics.stockpileXOffset+_graphics.pileSpacing,  
             _graphics.foundationYOffset},  
             {cardWidth,                    
             cardHeight}                   
         );
 
-        if (stockRect.contains(mouse) && !game.getStockpile().empty()) {
+        if (cardRect.contains(mouse) && !game.getStockpile().empty()) {
             // Initiate the drag on top-most (last index) stockpile card
             _graphics.draggedCard=&game.getStockpile().back(); // Set currently drag card to the top-most stockpile card 
         }
@@ -147,45 +152,40 @@ void Input::getHovered(sf::RenderWindow& window) {
         float xStart = _graphics.stockpileXOffset + 3.0f * _graphics.pileSpacing;
         for (int i=0;i<4;i++){
             float x = xStart+i*_graphics.pileSpacing;
-            sf::FloatRect stockRect( // Establish hitbox
+            sf::FloatRect cardRect( // Establish hitbox
                 {x,_graphics.foundationYOffset},  
                 {cardWidth,                    
                 cardHeight}                   
             );
-            if (stockRect.contains(mouse) && !game.getFoundation(i).empty()){
+            if (cardRect.contains(mouse) && !game.getFoundation(i).empty()){
                 _graphics.draggedCard=&game.getFoundation(i).back(); // Set currently drag card to the top-most foundation pile card 
             }
         }
 
         // Check Tableau
         for (int p=0;p<7;p++){ // Iterate through each pile 
-
             std::vector<Card> cards=game.getTableau(p);
-
             if (!cards.empty()){ 
-
                 for (int c=0;c<cards.size();c++){
                     // Establish hitbox for each card 
-
-                    sf::FloatRect stockRect;
+                    sf::FloatRect cardRect;
 
                     if (c==cards.size()-1){ // Final card so full hitbox
-                        stockRect= sf::FloatRect( // Establish hitbox
+                        cardRect= sf::FloatRect( // Establish hitbox
                         {_graphics.stockpileXOffset+(_graphics.pileSpacing*p),
                         _graphics.tableauYOffset+(c*_graphics.tableauYSpacing)},  
                         {cardWidth,                    
                         cardHeight}                   
                         );
                     } else { // Not final card so partial hitbox 
-                        stockRect= sf::FloatRect( // Establish hitbox
+                        cardRect= sf::FloatRect( // Establish hitbox
                         {_graphics.stockpileXOffset+(_graphics.pileSpacing*p),
                         _graphics.tableauYOffset + c*_graphics.tableauYSpacing},  
                         {cardWidth,                    
                         _graphics.tableauYSpacing}                   
                         );
                     }
-
-                    if (stockRect.contains(mouse)){
+                    if (cardRect.contains(mouse)){
                         _graphics.draggedCard=&game.getTableau(p)[c]; // Set currently drag card to this Tableau card
                     }
 

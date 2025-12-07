@@ -16,7 +16,12 @@ bool Spritesheet::loadFromFile(const std::string& path) {
 }
 
 bool Spritesheet::loadUndo(const std::string& path){
-    if (!undo.loadFromFile(path)) return false;
+    if (!_undo.loadFromFile(path)) return false;
+    return true;
+}
+
+bool Spritesheet::loadNewDeal(const std::string& path){
+    if (!_newDeal.loadFromFile(path)) return false;
     return true;
 }
 
@@ -34,8 +39,20 @@ sf::Sprite Spritesheet::getCardSprite(int col, int row) const {
 
 }
 
-sf::Sprite Spritesheet::makeBackSprite() const {
-    return Spritesheet::getCardSprite(3,5);
+int start=3; // Iterate from 3 to 5 to animate the back card
+sf::Sprite Spritesheet::makeBackSprite() {
+
+    if (_backClock.getElapsedTime() >= _backCardDelay){
+        start++;
+        if (start>5){ 
+            start=3;
+        }
+
+        _backClock.restart();
+
+    }
+
+    return Spritesheet::getCardSprite(start,5);
 }
 
 sf::Sprite Spritesheet::makeResetSprite() const {

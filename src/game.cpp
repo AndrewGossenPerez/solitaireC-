@@ -36,7 +36,7 @@ void Game::dealNewGame(){
     // Erase current game state
     if (!stockpile.empty())  stockpile.clear();
     if (!reserve.empty())  reserve.clear();
-
+    if (!moveHistory.empty())  moveHistory.clear();
     for (int i=0;i<7;i++){
         if (i<=3) { 
             if (!foundations.empty()) foundations[i].clear(); 
@@ -44,7 +44,8 @@ void Game::dealNewGame(){
         if (!tableau.empty()) tableau[i].clear();
     };
 
-    for (int s = 0; s < 4; ++s) { // Create the possible 52 cards 
+    // Create the possible 52 cards 
+    for (int s = 0; s < 4; ++s) { 
         for (int v = 0; v < 13; ++v) {
             reserve.push_back(Card{
                 static_cast<Suit>(s),
@@ -295,12 +296,13 @@ void Game::applyMove(const Move& move,bool undo){ // Applies a move based on the
 
             }
 
-            if (undo){ // At this point the index would be size-1 
+            if (!undo){ // At this point the index would be size-1 
                 Card c=movingCard;
                 c.setTableauIndex(tableau[move.getPile()].size()-1);
                 c.setTableauPile(move.getPile());
                 c.setFoudationPile(-1);
-                logMove(c,move);
+                std::cout << "Logged starting pos : " << static_cast<int>(move.getStartingPosition());
+                logMove(c,move); // Log this move so it can be undone 
             }
 
         }
@@ -395,7 +397,8 @@ void Game::undo(){
         stockpile.pop_back();
     } else { 
         applyMove(undoMove,true);
-        moveHistory.pop_back();
     }
+
+    moveHistory.pop_back();
 
 }

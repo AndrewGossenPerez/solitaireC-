@@ -31,6 +31,8 @@ public:
     const float mouseYOffset=-30.0f;
     const float undoXOffset=500.0f;
     const float undoYOffset=600.0f;
+    const float newDealXOffset=210.0f;
+    const float newDealYOffset=600.0f;
 
     const Card* draggedCard=nullptr;
     const Card* lastDragged=nullptr;
@@ -40,7 +42,6 @@ private:
 
     Game& game;
     Spritesheet& _sheet;
-    
     sf::Texture undo;
     sf::Font& _font;
 
@@ -50,5 +51,6 @@ private:
     void drawStockpile(sf::RenderWindow&, const Game&) const;
     void drawDragging(sf::RenderWindow&, const Game&) const;
     void drawUndo(sf::RenderWindow&) const;
+    void drawNewDeal(sf::RenderWindow&) const;
 
 };

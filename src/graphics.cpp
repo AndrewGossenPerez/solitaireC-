@@ -145,7 +145,6 @@ void SolitaireGraphics::drawDragging(sf::RenderWindow& window,const Game& gameDa
 }
 
 void SolitaireGraphics::drawUndo(sf::RenderWindow& window) const { 
-
     sf::Texture undo=_sheet.getUndo();
     sf::Sprite undoButton{undo};
     undoButton.setPosition({
@@ -155,6 +154,16 @@ void SolitaireGraphics::drawUndo(sf::RenderWindow& window) const {
 
 }
 
+void SolitaireGraphics::drawNewDeal(sf::RenderWindow& window) const{ 
+    sf::Texture newDeal=_sheet.getNewDeal();
+    sf::Sprite newDealButton{newDeal};
+    newDealButton.setPosition({
+        newDealXOffset,newDealYOffset
+    });
+    window.draw(newDealButton);
+}
+
+
 // Handler
 void SolitaireGraphics::draw(sf::RenderWindow& window,const Game& game,bool showWinText) const {
 
@@ -163,6 +172,7 @@ void SolitaireGraphics::draw(sf::RenderWindow& window,const Game& game,bool show
     drawStockpile(window,game);
     drawDragging(window,game);
     drawUndo(window);
+    drawNewDeal(window);
 
 }
 

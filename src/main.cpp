@@ -19,6 +19,7 @@ int main() {
     sf::Font font;
     if (!sheet.loadFromFile("assets/Spritesheet.png")) return 1;
     if (!sheet.loadUndo("assets/Undo.png")) return 1;
+    if (!sheet.loadNewDeal("assets/NewDeal.png")) return 1;
     if (!font.openFromFile("assets/arial.ttf")) return 1;
 
     Game game;
@@ -44,4 +45,5 @@ int main() {
     }
 
     return 0;
+
 }

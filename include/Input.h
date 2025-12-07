@@ -20,11 +20,11 @@ class Input{
 
     sf::Clock _dealClock;  // for cooldown
     sf::Time _dealCooldown = sf::milliseconds(100); // 0.1s between deals
+    sf::Vector2f lastPosition;
 
     Game& game;
     SolitaireGraphics& _graphics;
     Spritesheet& _sheet;
 
-    sf::Vector2f lastPosition;
 
 };
