@@ -183,7 +183,6 @@ void Game::FoundationLogic(const Move& move, const Card& movingCard,std::vector<
     if (proceed){
 
         Card c=movingCard;
-
         c.setLocation(Location::Foundation);
         c.setTableauPile(-1);
         c.setTableauIndex(-1);
@@ -198,9 +197,7 @@ void Game::FoundationLogic(const Move& move, const Card& movingCard,std::vector<
             logMove(clone,move);
         } 
 
-
     }
-
 
 };
 
@@ -270,7 +267,6 @@ void Game::TableauToTableauLogic(const Move& move, const Card& movingCard,bool u
 // -- Applies a game move using the Move object 
 void Game::applyMove(const Move& move,bool undo){ // Applies a move based on the logic of Klondike Solitaire 
 
-
     // move -- Move object on which the logic is based on 
     // undo -- Whether this is apart of an 'Undo' where the player has clicked the undo button 
             
@@ -289,15 +285,12 @@ void Game::applyMove(const Move& move,bool undo){ // Applies a move based on the
         if (move.getDestination()==Location::Tableau){ // We want to move from Stockpile to a Tableau pile
     
             if (tableau[move.getPile()].empty() && cardValue==12){
-                std::cout << " King Move stockpile " << std::endl;
                 // King move to an empty Tablau pile 
                 Card c=movingCard;
                 pushToTableau(move,c,stockpile);
             }
 
             if (!tableau[move.getPile()].empty()){
-
-                std::cout << " Moving to non-empty pile from stockpile, validate " << std::endl;
 
                 Card endCard=tableau[move.getPile()].back();
                 int endCardValue=static_cast<int>(endCard.getValue());
@@ -315,7 +308,6 @@ void Game::applyMove(const Move& move,bool undo){ // Applies a move based on the
                 c.setTableauIndex(tableau[move.getPile()].size()-1);
                 c.setTableauPile(move.getPile());
                 c.setFoudationPile(-1);
-                std::cout << "Logged starting pos : " << static_cast<int>(move.getStartingPosition());
                 logMove(c,move); // Log this move so it can be undone 
             }
 
@@ -324,9 +316,10 @@ void Game::applyMove(const Move& move,bool undo){ // Applies a move based on the
     }
 
     if (move.getStartingPosition()==Location::Tableau){ // We're moving from the Tableau to either Foundation or another Tableau pile 
-       
-        if (move.getDestination()==Location::Foundation && !undo){ // We want to move from Tableau to the Foundation, so the dragged card must be the last card of the pile
-            if (tableau[movingCard.getTableauPile()].size()==movingCard.getTableauIndex()+1){
+
+        if (move.getDestination()==Location::Foundation){ // We want to move from Tableau to the Foundation, so the dragged card must be the last card of the pile
+
+            if ( (tableau[movingCard.getTableauPile()].size()==movingCard.getTableauIndex()+1)){
                 // This is the last card, so we can apply Foundation logic 
                 FoundationLogic(move,movingCard,tableau[movingCard.getTableauPile()],undo);
                 tableau[movingCard.getTableauPile()].back().setFaceUp(true);
@@ -334,12 +327,10 @@ void Game::applyMove(const Move& move,bool undo){ // Applies a move based on the
         } 
 
         if (move.getDestination()==Location::Stockpile){ // This would occur during an Undo
-            std::cout<<"WE WANT TO RETURN TO THE STOCKPILE !!!"<<std::endl;
             pushToStockpile(move,movingCard,tableau[movingCard.getTableauPile()]);
         }
         
         if (move.getDestination()==Location::Tableau){
-            std::cout << " tableu-tablau " << std::endl;
             TableauToTableauLogic(move,movingCard,undo);
         }
 
@@ -347,26 +338,30 @@ void Game::applyMove(const Move& move,bool undo){ // Applies a move based on the
 
     if (move.getStartingPosition()==Location::Foundation){ // Moving from foundation to a tableau pile 
 
-        std::cout << " Location is foundation " <<std::endl;
-
         Card endCard=tableau[move.getPile()].back();
         int endCardSuit=static_cast<int>(endCard.getSuit());
         int endCardValue=static_cast<int>(endCard.getValue());
         bool differentColors =(endCardSuit%2)!=(suitValue%2);
 
         if (move.getDestination()==Location::Stockpile){ // This would occur during an Undo
-            std::cout<<"WE WANT TO RETURN TO THE STOCKPILE"<<std::endl;
             pushToStockpile(move,movingCard, foundations[movingCard.getFoundationPile()]);
         } else if ( (differentColors && endCardValue==cardValue+1) || undo ){
             // Valid move, push it to the tableau
             Card c=movingCard; // Create clone 
-            std::cout << "Push to tableau" << std::endl;
             pushToTableau(move,c,foundations[movingCard.getFoundationPile()]);
+           
             if (undo){
                 // Make the index before the newly applied card now face down
                 int faceDownIndex=tableau[move.getPile()].size()-2;
                 tableau[move.getPile()][faceDownIndex].setFaceUp(false);
             }
+
+            // Log the move for future undos
+            c.setFoudationPile(-1);
+            c.setTableauIndex(tableau[move.getPile()].size()-1);
+            c.setTableauPile(move.getPile());
+            logMove(c,move);
+
         } 
 
     }
