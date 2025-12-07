@@ -1,0 +1,20 @@
+# Ignore build output
+build/
+*.o
+*.obj
+*.exe
+*.app
+*.DS_Store
+
+# Ignore CMake or make artifacts
+CMakeFiles/
+CMakeCache.txt
+Makefile
+
+# Ignore Xcode stuff
+*.xcworkspace
+*.xcodeproj
+
+# Ignore binaries
+solitaire
+a.out

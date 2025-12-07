@@ -1,0 +1,19 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build-and-run",
+            "type": "shell",
+            "command": "sh",
+            "args": [
+                "-c",
+                "clang++ -std=c++17 -g /Users/andrewgossen/Documents/SolitaireC++/src/*.cpp -I/Users/andrewgossen/Documents/SolitaireC++/include -I/opt/homebrew/opt/sfml/include -L/opt/homebrew/opt/sfml/lib -lsfml-graphics -lsfml-window -lsfml-system -o /Users/andrewgossen/Documents/SolitaireC++/solitaire && /Users/andrewgossen/Documents/SolitaireC++/solitaire"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        }
+    ]
+}
