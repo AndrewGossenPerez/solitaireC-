@@ -12,17 +12,17 @@ void SolitaireGraphics::drawStockpile(sf::RenderWindow& window,const Game& game)
     // window -- The Solitaire window object 
     // game -- The solitaire game instance storing all game data
 
-    float cardWidth = static_cast<float>(_sheet.cardWidth());
-    float cardHeight = static_cast<float>(_sheet.cardHeight());
+    float cardWidth = static_cast<float>(sheet.cardWidth());
+    float cardHeight = static_cast<float>(sheet.cardHeight());
 
     sf::Vector2f mouse = window.mapPixelToCoords(sf::Mouse::getPosition(window));
     
     if (game.getReserve().empty()){ // All cards have been dealt, so show the reset card
-        auto sprite = _sheet.makeResetSprite(); 
+        auto sprite = sheet.makeResetSprite(); 
         sprite.setPosition({ stockpileXOffset, foundationYOffset });
         window.draw(sprite);
     } else { // Not all card's have been dealt, so show the back card
-        auto sprite = _sheet.makeBackSprite(); 
+        auto sprite = sheet.makeBackSprite(); 
         sprite.setPosition({ stockpileXOffset, foundationYOffset });
         window.draw(sprite);
     }
@@ -33,7 +33,7 @@ void SolitaireGraphics::drawStockpile(sf::RenderWindow& window,const Game& game)
         if (draggedCard!=nullptr){
             if (draggedCard==&c) return; // This card is being dragged, hence we don't want to render it 
         }
-        auto sprite = _sheet.makeCardSprite(c);
+        auto sprite = sheet.makeCardSprite(c);
         sprite.setPosition({ stockpileXOffset+pileSpacing, foundationYOffset });
         window.draw(sprite);
     } 
@@ -45,8 +45,8 @@ void SolitaireGraphics::drawFoundations(sf::RenderWindow& window,const Game& gam
     // window -- The Solitaire window object 
     // game -- The solitaire game instance storing all game data
 
-    float cardWidth = static_cast<float>(_sheet.cardWidth());
-    float cardHeight= static_cast<float>(_sheet.cardHeight());
+    float cardWidth = static_cast<float>(sheet.cardWidth());
+    float cardHeight= static_cast<float>(sheet.cardHeight());
 
     sf::Vector2f mouse = window.mapPixelToCoords(sf::Mouse::getPosition(window));
     float xStart = stockpileXOffset + 3.0f * pileSpacing;
@@ -73,7 +73,7 @@ void SolitaireGraphics::drawFoundations(sf::RenderWindow& window,const Game& gam
 
             if (index<=game.getFoundation(i).size()){ // Ensure that the index is appropriate such that we avoid a heap issue 
                 const Card& c=game.getFoundation(i)[game.getFoundation(i).size()-index];
-                auto sprite = _sheet.makeCardSprite(c);
+                auto sprite = sheet.makeCardSprite(c);
                 sprite.setPosition({ x, y });
                 window.draw(sprite);  // Draw out foundation card 
             }
@@ -96,7 +96,7 @@ void SolitaireGraphics::drawTableau(sf::RenderWindow& window,const Game& gameDat
         for (int k=0;k<cards.size();k++){ // Iterate through each card 
             const Card& c = game.getTableau(i)[k]; 
             if (c.getFaceUp()){ // Card is face up, so we should show it 
-                auto sprite = _sheet.makeCardSprite(c);
+                auto sprite = sheet.makeCardSprite(c);
                 sprite.setPosition({ stockpileXOffset+(pileSpacing*i), tableauYOffset+(k*tableauYSpacing)} );
 
                 if (draggedCard!=nullptr){ // Before we draw this card out, we need to ensure it isn't being dragged alongside the dragged card 
@@ -110,7 +110,7 @@ void SolitaireGraphics::drawTableau(sf::RenderWindow& window,const Game& gameDat
                 window.draw(sprite); // Not connected to the dragged card, we're free to render it 
 
             } else { // Card isn't face up, show back card instead 
-                auto sprite = _sheet.makeBackSprite();
+                auto sprite = sheet.makeBackSprite();
                 sprite.setPosition({ stockpileXOffset+(pileSpacing*i), tableauYOffset+(k*tableauYSpacing)} );
                 window.draw(sprite);
             }
@@ -131,7 +131,7 @@ void SolitaireGraphics::drawDragging(sf::RenderWindow& window,const Game& gameDa
     if (draggedCard!=nullptr){ // Check if there is a currently dragged card 
 
         Card draggedCardObj=*draggedCard;
-        auto sprite = _sheet.makeCardSprite(draggedCardObj);
+        auto sprite = sheet.makeCardSprite(draggedCardObj);
         sprite.setPosition({ mouse.x+mouseXOffset,mouse.y+mouseYOffset } ); // Set the dragged card to the mouse 
  
         if (draggedCardObj.getLocation()==Location::Tableau){ // Check if any other cards are being dragged alongside this card, only applicable to Tableau cards
@@ -143,7 +143,7 @@ void SolitaireGraphics::drawDragging(sf::RenderWindow& window,const Game& gameDa
 
             for (int c=draggedCardObj.getTableauIndex();c<game.getTableau(pile).size();c++){ // These cards are ahead of the dragged card ( Further down the Tableau ), so connected
                 Card connectedCard=game.getTableau(pile)[c];
-                auto sprite = _sheet.makeCardSprite(connectedCard);
+                auto sprite = sheet.makeCardSprite(connectedCard);
                 sprite.setPosition({ mouse.x+mouseXOffset,mouse.y+mouseYOffset+(tableauYSpacing*i)} );
                 window.draw(sprite); // Draw each connected card, inclusive of the sole dragged card 
                 i++;
@@ -162,7 +162,7 @@ void SolitaireGraphics::drawUndo(sf::RenderWindow& window) const {
 
     // window -- The Solitaire window object 
 
-    sf::Texture undo=_sheet.getUndo(); // Get texture 
+    sf::Texture undo=sheet.getUndo(); // Get texture 
     sf::Sprite undoButton{undo}; // Set texture to sprite 
     undoButton.setPosition({ // Position undo button
         undoXOffset,undoYOffset
@@ -176,7 +176,7 @@ void SolitaireGraphics::drawNewDeal(sf::RenderWindow& window) const{
 
     // window -- The Solitaire window object 
 
-    sf::Texture newDeal=_sheet.getNewDeal(); // Get texture 
+    sf::Texture newDeal=sheet.getNewDeal(); // Get texture 
     sf::Sprite newDealButton{newDeal}; // Set texture to sprite 
     newDealButton.setPosition({ // Position the new deal button 
         newDealXOffset,newDealYOffset

@@ -9,10 +9,10 @@ bool Spritesheet::loadFromFile(const std::string& path) {
 
     // path -- The file path for the texture 
 
-    if (!_texture.loadFromFile(path)) return false;
+    if (!texture.loadFromFile(path)) return false;
 
     // Initialise card width and height, note the sprite sheet is 13 cols by 6 rows
-    sf::Vector2u texSize = _texture.getSize();
+    sf::Vector2u texSize = texture.getSize();
     _cardWidth  = static_cast<int>(texSize.x / 13);
     _cardHeight = static_cast<int>(texSize.y / 6);
     return true;
@@ -23,7 +23,7 @@ bool Spritesheet::loadFromFile(const std::string& path) {
 bool Spritesheet::loadUndo(const std::string& path){
 
     // path -- The file path for the texture 
-    if (!_undo.loadFromFile(path)) return false;
+    if (!undo.loadFromFile(path)) return false;
     return true;
 }
 
@@ -31,7 +31,7 @@ bool Spritesheet::loadUndo(const std::string& path){
 bool Spritesheet::loadNewDeal(const std::string& path){
 
     // path -- The file path for the texture 
-    if (!_newDeal.loadFromFile(path)) return false;
+    if (!newDeal.loadFromFile(path)) return false;
     return true;
 }
 
@@ -48,7 +48,7 @@ sf::Sprite Spritesheet::getCardSprite(int col, int row) const {
         _cardHeight}
     );
 
-    sf::Sprite sprite{_texture, rect};
+    sf::Sprite sprite{texture, rect};
     return sprite;
 
 }
@@ -57,12 +57,12 @@ sf::Sprite Spritesheet::getCardSprite(int col, int row) const {
 // -- Back card animation 
 int start=3; // Iterate from 3 to 5 to animate the back card
 sf::Sprite Spritesheet::makeBackSprite() {
-    if (_backClock.getElapsedTime() >= _backCardDelay){ // We've passed the delay 
+    if (backClock.getElapsedTime() >= backCardDelay){ // We've passed the delay 
         start++; // Increment the back card sprite 
         if (start>5){ 
             start=3;
         }
-        _backClock.restart(); // Reset the clock
+        backClock.restart(); // Reset the clock
     }
     return Spritesheet::getCardSprite(start,5); // Set the back card sprite 
 }
@@ -86,7 +86,7 @@ sf::Sprite Spritesheet::makeCardSprite(const Card& card) const {
         _cardHeight}
     );
 
-    sf::Sprite sprite{_texture, rect};
+    sf::Sprite sprite{texture, rect};
     return sprite;
 
 }

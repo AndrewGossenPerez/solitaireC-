@@ -19,18 +19,18 @@ class Spritesheet{
     sf::Sprite makeBackSprite();
     sf::Sprite makeResetSprite() const;
     sf::Sprite getCardSprite(int col, int row) const;
-    sf::Texture getUndo() const { return _undo; } 
-    sf::Texture getNewDeal() const { return _newDeal; }
+    sf::Texture getUndo() const { return undo; } 
+    sf::Texture getNewDeal() const { return newDeal; }
     int cardWidth() const { return _cardWidth; }
     int cardHeight() const { return _cardHeight; }
 
     private:
 
-    sf::Clock _backClock;  // For the deal card animation 
-    sf::Time _backCardDelay = sf::milliseconds(1000); // Card changes every second 
-    sf::Texture _texture;
-    sf::Texture _undo;
-    sf::Texture _newDeal;
+    sf::Clock backClock;  // For the deal card animation 
+    sf::Time backCardDelay = sf::milliseconds(1000); // Card changes every second 
+    sf::Texture texture;
+    sf::Texture undo;
+    sf::Texture newDeal;
     int _cardWidth;
     int _cardHeight;
     int suitRow(Suit s) const;

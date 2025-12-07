@@ -8,14 +8,13 @@
 #include "Card.h"
 #include "Spritesheet.h"
 
-
 class SolitaireGraphics {
 
 public:
 
     // Class constructor 
     SolitaireGraphics(Spritesheet& sheet, sf::Font& font,Game& gameInstance)
-    : _sheet(sheet), _font(font), game(gameInstance) {};
+    : sheet(sheet), font(font), game(gameInstance) {};
 
     void draw(sf::RenderWindow& window,
               const Game& game,
@@ -41,9 +40,9 @@ public:
 private:
 
     Game& game; 
-    Spritesheet& _sheet;
+    Spritesheet& sheet;
     sf::Texture undo;
-    sf::Font& _font;
+    sf::Font& font;
 
     void drawDealtCard(sf::RenderWindow&, const Game&) const;
     void drawFoundations(sf::RenderWindow&, const Game&) const;

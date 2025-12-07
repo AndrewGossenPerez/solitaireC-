@@ -14,17 +14,17 @@ class Input{
 
     // Class constructor 
     Input(Game& gameInstance,SolitaireGraphics& graphics,Spritesheet& sheet) 
-    : game(gameInstance), _graphics(graphics), _sheet(sheet) {};
+    : game(gameInstance), graphics(graphics), sheet(sheet) {};
 
     void getHovered(sf::RenderWindow& window); // Sets the hovered card data
 
     private:
 
-    sf::Clock _dealClock; // Used for debouncing buttons 
-    sf::Time _dealCooldown = sf::milliseconds(100); // 0.1s debounce delay for buttons 
+    sf::Clock dealClock; // Used for debouncing buttons 
+    sf::Time dealCooldown = sf::milliseconds(100); // 0.1s debounce delay for buttons 
 
     Game& game;
-    SolitaireGraphics& _graphics;
-    Spritesheet& _sheet;
+    SolitaireGraphics& graphics;
+    Spritesheet& sheet;
 
 };
