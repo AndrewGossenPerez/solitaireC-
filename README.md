@@ -4,7 +4,7 @@ This was made in less than a day, don't expect perfection.
 Requires SFML.
 --
 
-1) Installation:
+1 ) Installation:
  
    MacOs: brew install sfml
    
@@ -16,7 +16,7 @@ Requires SFML.
 
    make
    
-3) Run the game :
+3 ) Run the game :
    
    ./solitaire
    
